@@ -4,7 +4,7 @@ const Bodies = Matter.Bodies;
 const Constraint = Matter.Constraint;
 var engine, world;
 var canvas, angle, tower, ground, cannon;
-
+var balls=[]
 
 
 
@@ -22,7 +22,7 @@ function setup() {
   ground = new Ground(0, height - 1, width * 2, 1);
   tower = new Tower(150, 350, 160, 310);
   cannon = new Cannon(180, 110, 100, 50, angle);
-  cannonBall = new CannonBall(cannon.x, cannon.y);
+  
 
 }
 
@@ -38,17 +38,28 @@ function draw() {
 
   cannon.display();
   tower.display();
-  cannonBall.display()
+  for (var i = 0; i < balls.length; i++) {
+    showCannonBalls(balls[i],i);
+    
+  }
  
 }
 
-
-
-
-
-
 function keyReleased() {
+ if (keyCode === DOWN_ARROW) {
+    balls[balls.length-1].shoot();
+ }
+}
+function keyPressed() {
   if (keyCode === DOWN_ARROW) {
-    cannonBall.shoot()
+    cannonBall = new CannonBall(cannon.x, cannon.y);
+    balls.push(cannonBall)
   }
+}
+function showCannonBalls(ball,index){
+ball.display();
+if (ball.body.position.x>=width||ball.body.position.y>=height-50) {
+  Matter.World.remove(world,ball.body)
+  balls.splice(index,1)
+}
 }
